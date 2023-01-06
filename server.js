@@ -2,6 +2,8 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }))
+app.use(express.json({ limit: "50mb" }));
 const cors = require("cors");
 const corsOptions = {
     origin: '*',
@@ -10,11 +12,9 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions))
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }))
-app.use(express.json({ limit: "50mb" }));
+
 
 // DB setup
-
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.DATABASE_URL, {
@@ -26,9 +26,15 @@ const db = mongoose.connection
 db.on('error', error => console.error(error))
 db.once('open', () => console.log("Connected to mongoose"))
 
-app.get("/", (req, res) => {
-    res.send("Index Route")
-})
+//routes setup
+const login = require('./routes/login')
+const post = require('./routes/post')
+const home = require('./routes/home')
+
+//use routes
+app.use("/api/login",login)
+app.use("/api/post",post)
+app.use("/api/home",home)
 
 app.listen(3001,()=>{
     console.log("Server listening at port 3001")
