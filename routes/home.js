@@ -5,7 +5,7 @@ const Thought = require('../models/thoughtModel')
 router
   .route("/")
   .get(async (req, res) => {
-    const userPosts = await Thought.find().populate('authorId').limit(20)
+    const userPosts = await Thought.find().populate('authorId').sort({date:-1}).limit(20)
     // console.log(userPosts)
     res.json({ auth: true, posts: userPosts })
   })
