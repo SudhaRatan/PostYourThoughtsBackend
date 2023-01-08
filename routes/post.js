@@ -35,4 +35,21 @@ router
     res.json({ auth: true, posts: userPosts })
   })
 
+router
+  .route("/your/:id")
+  .delete(verifyJWT, async (req, res) => {
+    // const id = req.body.id
+    // console.log(req.params.id)
+    try {
+      await Thought.findByIdAndDelete(req.params.id)
+        .then((result) => {
+          // console.log("Deleted")
+          res.json({stat:true})
+        })
+
+    } catch (error) {
+      console.log(error)
+    }
+  })
+
 module.exports = router
