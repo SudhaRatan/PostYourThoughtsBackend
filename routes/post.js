@@ -30,13 +30,21 @@ router
 router
   .route("/your")
   .get(verifyJWT, async (req, res) => {
-    const userPosts = await Thought.find({ authorId: req.userId }).populate('authorId')
+    const userPosts = await Thought.find({ authorId: req.userId }).populate('authorId').sort({date:-1})
     // console.log(userPosts)
     res.json({ auth: true, posts: userPosts })
   })
 
 router
   .route("/your/:id")
+  .get(verifyJWT,async(req,res) => {
+    try {
+      const thought = await Thought.findById(req.params.id)
+      res.json({thought})
+    } catch (error) {
+      console.log(error)
+    }
+  })
   .delete(verifyJWT, async (req, res) => {
     // const id = req.body.id
     // console.log(req.params.id)
@@ -50,6 +58,22 @@ router
     } catch (error) {
       console.log(error)
     }
+  })
+  .put(verifyJWT,async(req,res) => {
+    // console.log(req.params.id)
+    let thought
+    try {
+      thought = await Thought.findById(req.params.id)
+      thought.title= req.body.post.title,
+      thought.description= req.body.post.description,
+      thought.imageData= req.body.image,
+      thought.authorId= req.userId
+      await thought.save()
+      res.json({ stat: true })
+    } catch (error) {
+      console.log(error)
+    }
+    
   })
 
 module.exports = router
