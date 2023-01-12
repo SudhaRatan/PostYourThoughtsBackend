@@ -22,6 +22,10 @@ const thoughtSchema = mongoose.Schema({
   imageData: {
     type: String,
     required: true
+  },
+  anonymous:{
+    type: Boolean,
+    required: true,
   }
 })
 

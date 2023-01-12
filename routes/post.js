@@ -15,7 +15,8 @@ router
         title: req.body.post.title,
         description: req.body.post.description,
         imageData: req.body.image,
-        authorId: req.userId
+        authorId: req.userId,
+        anonymous: req.body.check
       })
       // console.log(newThought)
       const result = await newThought.save()
@@ -68,6 +69,7 @@ router
       thought.description= req.body.post.description,
       thought.imageData= req.body.image,
       thought.authorId= req.userId
+      thought.anonymous = req.body.check
       await thought.save()
       res.json({ stat: true })
     } catch (error) {
