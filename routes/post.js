@@ -31,17 +31,17 @@ router
 router
   .route("/your")
   .get(verifyJWT, async (req, res) => {
-    const userPosts = await Thought.find({ authorId: req.userId }).populate('authorId').sort({date:-1})
+    const userPosts = await Thought.find({ authorId: req.userId }, { imageData: 0, password: 0 }).populate('authorId').sort({ date: -1 })
     // console.log(userPosts)
     res.json({ auth: true, posts: userPosts })
   })
 
 router
   .route("/your/:id")
-  .get(verifyJWT,async(req,res) => {
+  .get(verifyJWT, async (req, res) => {
     try {
       const thought = await Thought.findById(req.params.id)
-      res.json({thought})
+      res.json({ thought })
     } catch (error) {
       console.log(error)
     }
@@ -53,29 +53,29 @@ router
       await Thought.findByIdAndDelete(req.params.id)
         .then((result) => {
           // console.log("Deleted")
-          res.json({stat:true})
+          res.json({ stat: true })
         })
 
     } catch (error) {
       console.log(error)
     }
   })
-  .put(verifyJWT,async(req,res) => {
+  .put(verifyJWT, async (req, res) => {
     // console.log(req.params.id)
     let thought
     try {
       thought = await Thought.findById(req.params.id)
-      thought.title= req.body.post.title,
-      thought.description= req.body.post.description,
-      thought.imageData= req.body.image,
-      thought.authorId= req.userId
+      thought.title = req.body.post.title,
+        thought.description = req.body.post.description,
+        thought.imageData = req.body.image,
+        thought.authorId = req.userId
       thought.anonymous = req.body.check
       await thought.save()
       res.json({ stat: true })
     } catch (error) {
       console.log(error)
     }
-    
+
   })
 
 module.exports = router
