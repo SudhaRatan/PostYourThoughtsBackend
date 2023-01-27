@@ -28,13 +28,7 @@ router
     }
   })
 
-router
-  .route("/your")
-  .get(verifyJWT, async (req, res) => {
-    const userPosts = await Thought.find({ authorId: req.userId }, { imageData: 0, password: 0 }).populate('authorId').sort({ date: -1 })
-    // console.log(userPosts)
-    res.json({ auth: true, posts: userPosts })
-  })
+
 
 router
   .route("/your/:id")
@@ -75,7 +69,14 @@ router
     } catch (error) {
       console.log(error)
     }
+  })
 
+router
+  .route("/your/pages/:page")
+  .get(verifyJWT, async (req, res) => {
+    const userPosts = await Thought.find({ authorId: req.userId }, { imageData: 0, password: 0 }).populate('authorId').sort({ date: -1 }).limit(req.params.page*10)
+    // console.log(userPosts)
+    res.json({ auth: true, posts: userPosts })
   })
 
 module.exports = router

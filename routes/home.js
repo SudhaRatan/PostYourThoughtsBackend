@@ -3,10 +3,11 @@ const router = express.Router()
 const Thought = require('../models/thoughtModel')
 
 router
-  .route("/")
+  .route("/:page")
   .get(async (req, res) => {
-    const userPosts = await Thought.find({anonymous: false},{imageData:0,password:0}).populate('authorId').sort({date:-1}).limit(20)
-    // console.log(userPosts)
+    const page = req.params.page
+    const userPosts = await Thought.find({anonymous: false},{imageData:0,password:0}).populate('authorId').sort({date:-1}).skip(page*10).limit(10)
+    // console.log(userPosts.length)
     res.json({ auth: true, posts: userPosts })
   })
 
